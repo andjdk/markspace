@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+		<title>纪念空间</title>
+		<link rel="stylesheet" href="lib/bootstrap-4.0.0-dist/css/bootstrap.min.css">
+
+		<style>
+			.submit {
+				width: 60%;
+				height: 100px;
+				margin: auto;
+			}
+			
+			#submit_value {
+				width: 60%;
+				height: 200px;
+				vertical-align: top;
+			}
+			
+			#input_date {
+				margin-top: 20px;
+				width: 50%;
+			}
+			
+		</style>
+
+	</head>
+
+	<body>
+
+		<div class="col-lg-12 col-md-12 text-center">
+			<h1 id="fh5co-logo"><a href="index.html">MarkSpace <sup>TM</sup></a></h1>
+		</div>
+
+		<ul class="nav nav-pills nav-justified">
+			<li class="nav-item">
+				<a class="nav-link active" href="#">空间站</a>
+			</li>
+
+			<li class="nav-item">
+				<a class="nav-link" href="#">个人</a>
+			</li>
+
+		</ul>
+		<br></br>
+
+		<form class="form-inline">
+			<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="search_value">
+			<button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="search_btn">Search</button>
+		</form>
+
+		<div class="panel-body">
+			<!--内容块开始-->
+			<input type="file" value="sdgsdg" id="input_image" />
+
+			<p id="img_area"></p>
+
+			<!--内容块结束-->
+		</div>
+
+		<div class="input_content">
+			<input id="submit_value" type="text" placeholder="此时此刻的想法...">
+
+		</div>
+
+		<div class="input_date">
+			<input id="input_date" type="datetime-local" value="2018-05-20T13:14" />
+			<button id="record_btn">记录一下</button>
+		</div>
+
+		<div class="noExtension hide" id="noExtension">
+			注意: 请安装
+			<a target="_blank" href="https://github.com/ChengOrangeJu/WebExtensionWallet" style="color: red;">星云钱包拓展</a>
+		</div>
+
+		<script src=lib/jquery-3.3.1.min.js></script>
+		<script src=lib/nebPay.js></script>
+		<script src=lib/bootstrap-4.0.0-dist/js/bootstrap.min.js></script>
+		<script>
+			window.onload = function() {
+				var input = document.getElementById("input_image");
+				var img_area = document.getElementById("img_area");
+				if(typeof(FileReader) === 'undefined') {
+					alert("抱歉，你的浏览器不支持 FileReader，请使用现代浏览器操作！");
+					input.setAttribute('disabled', 'disabled');
+				} else {
+					input.addEventListener('change', readFile, false);
+				}
+			}
+
+			var imageSource = null;
+
+			function readFile() {
+				var file = this.files[0];
+				var imageType = /^image\//;
+				//这里我们判断下类型如果不是图片就返回 去掉就可以上传任意文件 
+				if(!imageType.test(file.type)) {
+					alert("请选择图片！");
+					return;
+				}
+				var reader = new FileReader();
+				reader.readAsDataURL(file);
+				reader.onload = function(e) {
+					imageSource = e.target.result;
+					console.log(imageSource)
+					img_area.innerHTML = '<div class="sitetip"></div><img src="' + this.result + '" alt=""/>';
+				}
+			}
+
+			var NebPay = require("nebpay"); //https://github.com/nebulasio/nebPay
+			var nebPay = new NebPay();
+
+			$("#submit_value").attr("disabled", true)
+			$("#record_btn").attr("disabled", true)
+			$("#img_area").attr("disabled", true)
+			$("#input_date").attr("disabled", true)
+			$("#input_image").attr("disabled", true)
+
+			if(typeof(webExtensionWallet) === "undefined") {
+				console.log("check webExtensionWallet undefined")
+				//alert ("Extension wallet is not installed, please install it first.")
+				$("#noExtension").removeClass("hide")
+			} else {
+				console.log("check webExtensionWallet defined")
+				$("#submit_value").attr("disabled", false)
+				$("#record_btn").attr("disabled", false)
+				$("#input_date").attr("disabled", false)
+				$("#input_image").attr("disabled", false)
+			}
+
+			var offset = 1; // 读取位置
+			var limit = 100000000000; // 条数
+
+			var dappAddress = "n1h2z7BVW8feCvbQzHeXS8NgQFcjYWei1iV"; // test合约地址
+			var intervalFunc; // 记录定时器
+			var postData = new Map(); // 记录数据
+
+			//点击记录
+			$("#record_btn").click(function() {
+				var submit_content = $("#submit_value").val();
+				console.log("imagesource  " + imageSource);
+				var submit_imageSource = imageSource;
+				var submit_date = $("#input_date").val();
+				var to = dappAddress;
+				var value = "0";
+				var callFunction = "save";
+				var callArgs = "[\"" + submit_imageSource + "\",\"" + submit_content + "\",\"" + submit_date + "\"]"
+
+				nebPay.call(to, value, callFunction, callArgs, { //使用nebpay的call接口去调用合约,
+					callback: cbPush
+				});
+			})
+
+			function cbPush(resp) {
+				var result = resp.result
+				console.log("response of cbPush resp: " + JSON.stringify(result))
+
+				if(result === 'null') {
+					console.log("result  null")
+				} else {
+					//if result is not null, then it should be "return value" or "error message"
+					try {
+						result = JSON.parse(result)
+					} catch(err) {
+						//result is the error message
+					}
+				}
+
+				$("#submit_value").val("");
+			}
+			
+			$("#search_btn").click(function(){
+				console.log("search_btn_onclick")
+				var search_value = $("#search_value").val();
+				
+				var offset = 1;
+				var limit = 1000;
+				
+				var to = dappAddress;
+				var value = "0";
+				var callFunction = "getList";
+				var callArgs = "[\"" + offset + "\",\"" + limit + "\"]"; // 可分页，[offset, limit]
+				
+				nebPay.simulateCall(to, value, callFunction, callArgs, { //使用nebpay的simulateCall接口去执行get查询, 模拟执行.不发送交易,不上链
+					callback: getListCallback //指定回调函数
+				});
+			})
+			
+//			var getList = function(offset, limit) {
+//
+//				var to = dappAddress;
+//				var value = "0";
+//				var callFunction = "getList";
+//				var callArgs = "[\"" + offset + "\",\"" + limit + "\"]"; // 可分页，[offset, limit]
+//				nebPay.simulateCall(to, value, callFunction, callArgs, { //使用nebpay的simulateCall接口去执行get查询, 模拟执行.不发送交易,不上链
+//					callback: getListCallback //指定回调函数
+//				});
+//			};
+			
+			//return of getListCallback,
+			function getListCallback(resp) {
+				console.log("response of getListCallback resp: " + JSON.stringify(resp))
+
+				if(resp.execute_err === '') {
+					var result = JSON.parse(resp.result);
+
+					for(var i = 0; i < result.length; i++) {
+						var postObj = result[i];
+						postData.set(offset.toString(), postObj);
+						var text = "<p class='texts'>"
+						postObj.postContent + "</p>"
+						$("#textBox").append(text)
+						img_area.innerHTML = '<div class="sitetip"></div><img src="' + postObj.postImageSource + '" alt=""/>';
+						offset += 1;
+					}
+				}
+			}
+		</script>
+		<!--<script>
+			var NebPay = require("nebpay"); //https://github.com/nebulasio/nebPay
+			var nebPay = new NebPay();
+
+			document.addEventListener("DOMContentLoaded", function() {
+				$("#submit_value").attr("disabled", true)
+				$("#record_btn").attr("disabled", true)
+				$("#img_area").attr("disabled", true)
+				$("#input_date").attr("disabled", true)
+				$("#input_image").attr("disabled", true)
+				console.log("web page loaded...")
+				setTimeout(checkNebpay, 100);
+			});
+
+			function checkNebpay() {
+				console.log("check nebpay")
+
+				//to check if the extension is installed
+				//if the extension is installed, var "webExtensionWallet" will be injected in to web page
+				if(typeof(webExtensionWallet) === "undefined") {
+					console.log("check webExtensionWallet undefined")
+					//alert ("Extension wallet is not installed, please install it first.")
+					$("#noExtension").removeClass("hide")
+				} else {
+					console.log("check webExtensionWallet defined")
+					$("#submit_value").attr("disabled", false)
+					$("#record_btn").attr("disabled", false)
+					$("#input_date").attr("disabled", false)
+					$("#input_image").attr("disabled", false)
+				}
+			}
+
+			
+
+			var offset = 1; // 读取位置
+			var limit = 100000000000; // 条数
+
+			var dappAddress = "n1q2C6LTnzvosnuJZQnBxxUAbXB8Pa32wGr"; // 主网合约地址
+			var intervalFunc; // 记录定时器
+			var postData = new Map(); // 记录数据
+
+			var getList = function(offset, limit) {
+
+				var to = dappAddress;
+				var value = "0";
+				var callFunction = "getList";
+				var callArgs = "[\"" + offset + "\",\"" + limit + "\"]"; // 可分页，[offset, limit]
+				nebPay.simulateCall(to, value, callFunction, callArgs, { //使用nebpay的simulateCall接口去执行get查询, 模拟执行.不发送交易,不上链
+					callback: getListCallback //指定回调函数
+				});
+			};
+
+			//return of getListCallback,
+			function getListCallback(resp) {
+				console.log("response of getListCallback resp: " + JSON.stringify(resp))
+
+				if(resp.execute_err === '') {
+					var result = JSON.parse(resp.result);
+
+					for(var i = 0; i < result.length; i++) {
+						var postObj = result[i];
+						postData.set(offset.toString(), postObj);
+						var text = "<p class='texts'>"
+						postObj.content + "</p>"
+						$("#textBox").append(text)
+						offset += 1;
+					}
+				}
+			}
+
+			// 默认获取列表，后续做定时获取更新
+			getList(offset, limit, false);
+
+			//点击记录
+			$("#record_btn").click(function() {
+				var submit_content = $("#submit_value").val();
+				var submit_imageSource = imageSource;
+				var submit_date = $("#input_date").val();
+				var to = dappAddress;
+				var value = "0";
+				var callFunction = "save";
+				var callArgs = "[\"" + postContent + "\",\"" + postImageSource + "\",\"" + postDate + "\"]"
+
+				nebPay.call(to, value, callFunction, callArgs, { //使用nebpay的call接口去调用合约,
+					callback: cbPush
+				});
+			})
+
+			function cbPush(resp) {
+				console.log("response of cbPush resp: " + JSON.stringify(resp))
+
+				getLastItemCallback(resp);
+
+				intervalFunc = setInterval("getLast()", 5 * 1000)
+				
+				var result = ""; //JSON.parse(resp.result);
+
+				if(result === 'null') {
+					$(".add_banner").addClass("hide");
+					$(".result_success").addClass("hide");
+
+					$("#result_faile_add").text(result.postTitle)
+
+					$(".result_faile").removeClass("hide");
+				} else {
+					//if result is not null, then it should be "return value" or "error message"
+					try {
+						result = JSON.parse(result)
+					} catch(err) {
+						//result is the error message
+					}
+
+//					var tip = "温馨提示：您的话已在送往北极星的路上... (一旦到达，任何人将无法删除或者修改)"
+//
+//					$(".add_banner").addClass("hide");
+//					$(".result_faile").addClass("hide");
+//
+//					$("#search_banner").text($("#submit_value").val())
+//					$("#search_result").text(tip) //result.value
+//
+//					// var authorText = result.name + " ,  " + "  Account: " + result.author;
+//					// $("#submit_result_author").text(result.author)
+//					$(".result_success").removeClass("hide");
+				}
+
+				$("#submit_value").val("");
+			}
+		</script>-->
+
+	</body>
+
+</html>
