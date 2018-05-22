@@ -2,148 +2,375 @@
 <html>
 
 	<head>
-		<meta charset="utf-8" />
-		<meta http-equiv="X-UA-Compatible" content="ie=edge">
-
+		<meta charset="utf-8">
 		<title>纪念空间</title>
-		<link rel="stylesheet" href="lib/bootstrap-4.0.0-dist/css/bootstrap.min.css">
+		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
 
-		<style>
-			.submit {
-				width: 60%;
-				height: 100px;
-				margin: auto;
+		<link rel="stylesheet" href="lib/bootstrap-4.0.0-dist/css/bootstrap.min.css">
+		<!--<link rel="stylesheet" href="css/normalize.css">-->
+		<!--<link rel="stylesheet" href="css/index.css">-->
+
+		<script src="lib/waterfall.js"></script>
+		<script src=lib/jquery-3.3.1.min.js></script>
+		<script src=lib/nebPay.js></script>
+		<script src=lib/bootstrap-4.0.0-dist/js/bootstrap.min.js></script>
+		<script type="text/javascript" src="lib/jquery.meteorShowers-0.0.0.1.js"></script>
+
+		<style type="text/css">
+			body {
+				background-size: 100%;
+				width: 100%;
+				height: auto;
+				text-align: center;
+				
+			}
+			
+			.background {
+				background-image: url(img/bg.jpg);
+				background-attachment: fixed;
+				background-repeat: no-repeat;
+			}
+			
+			.title_desc {
+				width: 100%;
+				margin-top: 30px;
+				padding-left: 20%;
+				padding-right: 20%;
+				text-align: left;
 			}
 			
 			#submit_value {
 				width: 60%;
 				height: 200px;
-				vertical-align: top;
+				border-radius: 10px;
+				border-width: 1px;
+				border-color: white;
+				margin-top: 50px;
+				padding: 10px;
+				color: white;
+				font-size: 20px;
+				background: transparent;
+			}
+			
+			#add_pic_link {
+				width: 60%;
+				background: transparent;
+				margin-top: 10px;
+				height: 40px;
+				padding-left: 10px;
+				border-radius: 6px;
+				color: white;
+			}
+			
+			.preview {
+				width: 60%;
+				position: relative;
+				margin-left: 20%;
+				margin-top: 10px;
+			}
+			
+			.preview_left {
+				width: 100px;
+				height: 100px;
+				float: left;
+				
+			}
+			
+			.preview_right {
+				width: 90%;
+				height: 100px;
+				float: right;
+				align-self: flex-end;
+				text-align: right;
+				float: right;
 			}
 			
 			#input_date {
-				margin-top: 20px;
-				width: 50%;
+				background: transparent;
+				color: white;
+				height: 40px;
+				margin-top: 10px;
+				margin-right: 20px;
+				border-color: transparent;
+				font-size: 18px;
 			}
 			
+			.username {
+				background: transparent;
+				color: white;
+				height: 40px;
+				width: 150px;
+				margin-top: 10px;
+				margin-right: 20px;
+				border-color: white;
+				font-size: 18px;
+				border-radius: 6px;
+				padding-left: 10px;
+				
+			}
+			
+			.btn_publish {
+				height: 40px;
+				color: white;
+				width: auto;
+				margin-top: 10px;
+			}
+			
+			.div_pulish {
+				width: 60%;
+				height: 100px;
+				text-align: right;
+				float: right;
+				margin: 10px 20%;
+			}
+			
+			.file {
+				position: relative;
+				background: #0079fa;
+				border-radius: 4px;
+				padding: 9px 10px 11px 20px;
+				overflow: hidden;
+				color: white;
+				text-decoration: none;
+				text-indent: 0;
+				line-height: 40px;
+			}
+			
+			.file input {
+				position: absolute;
+				font-size: 100px;
+				right: 0;
+				top: 0;
+				opacity: 0;
+			}
+			
+			.file:hover {
+				background: #0364c5;
+				border-color: #0364c5;
+				color: white;
+				text-decoration: none;
+			}
+			
+			.line_limit_length {
+				max-width: 200px;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				padding: 10px;
+				font-size: 16px;
+			}
+			
+			.user_info_name {
+				width: 175px;
+				height: 30px;
+				align-items: center;
+				display: flex;
+				font-weight: bold;
+				color: orange;
+				padding: 10px;
+			}
+			
+			.dashang {
+				width: 30px;
+				height: 30px;
+				background: red;
+				-moz-border-radius: 15px;
+				-webkit-border-radius: 15px;
+				border-radius: 15px;
+				margin-bottom: 10px;
+				color: white;
+			}
+			
+			.user_info_bg {
+				background: #fafafa;
+				display: -webkit-box;
+				padding-top: 10px;
+			}
+			
+			.preview_pic {
+				width: 100px;
+				height: 100px;
+			}
+			
+			#waterfall {
+				position: relative;
+				height: auto;
+				width: 100%;
+				margin-left: 20%;
+				margin-bottom: 200px;
+			}
+			
+			.pin {
+				position: absolute;
+				width: 216px;
+				font-size: 12px;
+				background-color: #fff;
+				box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+				transition: opacity .4s ease-in-out;
+			}
+			
+			.pin img {
+				display: block;
+				width: 100%;
+			}
+			
+			.description {
+				display: block;
+				padding: 0 10px;
+				margin: 10px 0;
+				line-height: 1.35em;
+				overflow: hidden;
+				word-wrap: break-word;
+				text-align: left;
+			}
+			
+			.loader {
+				max-width: 50px;
+				position: absolute;
+				height: 200px;
+				margin-left: auto;
+				margin-right: auto;
+			}
+			
+			.wraper {
+				width: auto;
+				margin: 0 auto;
+			}
+			
+			.top_arrow {
+				border: 0 none;
+				bottom: 100px;
+				cursor: pointer;
+				display: none;
+				height: auto;
+				margin: 0;
+				opacity: 0.5;
+				padding: 0;
+				position: fixed;
+				right: 200px;
+				width: 80px;
+				z-index: 800;
+			}
 		</style>
-
 	</head>
+	
+	<script>
+		function isPC() {
+            var userAgentInfo = navigator.userAgent;
+            var Agents = ["Android", "iPhone",
+                        "SymbianOS", "Windows Phone",
+                        "iPad", "iPod"];
+            var flag = true;
+            for (var v = 0; v < Agents.length; v++) {
+                if (userAgentInfo.indexOf(Agents[v]) > 0) {
+                    flag = false;
+                    break;
+                }
+            }
+            return flag;
+        }
+        if(!isPC()){
+            alert("暂时不支持手机操作，请到电脑上用chrome浏览器操作。");
+            window.opener=null;    
+			window.close();
+        }
+	</script>
 
-	<body>
-
-		<div class="col-lg-12 col-md-12 text-center">
-			<h1 id="fh5co-logo"><a href="index.html">MarkSpace <sup>TM</sup></a></h1>
+	<body class="background">
+		<div>
+			<font color="white">参与
+				<a href="https://incentive.nebulas.io/cn/signup.html?invite=Eig3m">星云开发者激励计划</a>，提交作品即可获得110NAS，更有机会获得最高20,000NAS的大奖！ 注意: 请安装
+				<a target="_blank" href="https://github.com/ChengOrangeJu/WebExtensionWallet" style="color: red;">星云钱包拓展</font>
+			
 		</div>
 
-		<ul class="nav nav-pills nav-justified">
-			<li class="nav-item">
-				<a class="nav-link active" href="#">空间站</a>
-			</li>
-
-			<li class="nav-item">
-				<a class="nav-link" href="#">个人</a>
-			</li>
-
-		</ul>
-		<br></br>
-
-		<form class="form-inline">
-			<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" id="search_value">
-			<button class="btn btn-outline-success my-2 my-sm-0" type="submit" id="search_btn">Search</button>
-		</form>
-
-		<div class="panel-body">
-			<!--内容块开始-->
-			<input type="file" value="sdgsdg" id="input_image" />
-
-			<p id="img_area"></p>
-
-			<!--内容块结束-->
+		<br />
+		<br />
+		<h1 id="fh5co-logo" class="title_desc"><a href="index.html"><font color="white" >碎片空间</font></a></h1>
+		<div class="title_desc">
+			<font color="white" size="4px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;用碎片化的时间，来记录你的一生 。写在星云之上，永久保留。</font>
 		</div>
 
-		<div class="input_content">
-			<input id="submit_value" type="text" placeholder="此时此刻的想法...">
+		<textarea id="submit_value" type="text" placeholder="那刻的想法..." maxlength="300"></textarea>
+
+		<input type="text" id="add_pic_link" placeholder="添加图片链接地址" />
+
+		<div class="preview">
+			<div class="preview_left">
+				<p id="img_area" class="preview_pic"></p>
+			</div>
+			<div class="preview_right">
+
+				<font color="white" size="4px">那一刻的时间：</font>
+				<input id="input_date" type="date" />
+				<input id="username" class="username" type="text" placeholder="星云同学" maxlength="5">
+				<button id="submit" class="btn btn-primary">&nbsp;&nbsp;&nbsp;&nbsp;发布碎片&nbsp;&nbsp;&nbsp;&nbsp;</button>
+
+			</div>
 
 		</div>
 
-		<div class="input_date">
-			<input id="input_date" type="datetime-local" value="2018-05-20T13:14" />
-			<button id="record_btn">记录一下</button>
-		</div>
+		<br />
+		<br />
+		<br />
+		
+		<h1 id="fh5co-logo" class="title_desc"><font color="white" size="6px">全部碎片</font></h1>
+			<br />
+		<div id="waterfall" class="water"></div>
 
-		<div class="noExtension hide" id="noExtension">
-			注意: 请安装
-			<a target="_blank" href="https://github.com/ChengOrangeJu/WebExtensionWallet" style="color: red;">星云钱包拓展</a>
+		<div class="loader" id="loader">
+			<div class="loader-inner line-spin-fade-loader">
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+				<div></div>
+			</div>
 		</div>
+		
 
-		<script src=lib/jquery-3.3.1.min.js></script>
-		<script src=lib/nebPay.js></script>
-		<script src=lib/bootstrap-4.0.0-dist/js/bootstrap.min.js></script>
+		<!--添加图片-->
 		<script>
-			window.onload = function() {
-				var input = document.getElementById("input_image");
-				var img_area = document.getElementById("img_area");
-				if(typeof(FileReader) === 'undefined') {
-					alert("抱歉，你的浏览器不支持 FileReader，请使用现代浏览器操作！");
-					input.setAttribute('disabled', 'disabled');
-				} else {
-					input.addEventListener('change', readFile, false);
-				}
-			}
+			var img_area = document.getElementById("img_area");
+			var imagePath = document.getElementById("add_pic_link");
 
-			var imageSource = null;
+			imagePath.addEventListener("change", function visiblePic() {
+				console.log(imagePath.value);
 
-			function readFile() {
-				var file = this.files[0];
-				var imageType = /^image\//;
-				//这里我们判断下类型如果不是图片就返回 去掉就可以上传任意文件 
-				if(!imageType.test(file.type)) {
-					alert("请选择图片！");
-					return;
-				}
-				var reader = new FileReader();
-				reader.readAsDataURL(file);
-				reader.onload = function(e) {
-					imageSource = e.target.result;
-					console.log(imageSource)
-					img_area.innerHTML = '<div class="sitetip"></div><img src="' + this.result + '" alt=""/>';
-				}
-			}
+				imageSource = imagePath.value;
+				img_area.innerHTML = '<img width="100px" height="100px" src="' + imageSource + '" alt=""/>';
+
+			});
+		</script>
+
+		<script>
+			var dappAddress = "n1rUjLELfye9yFqSRfvsrTayakDeNSynZTW"; // 測試合约地址
 
 			var NebPay = require("nebpay"); //https://github.com/nebulasio/nebPay
 			var nebPay = new NebPay();
+			var postData = new Map();
 
-			$("#submit_value").attr("disabled", true)
-			$("#record_btn").attr("disabled", true)
-			$("#img_area").attr("disabled", true)
-			$("#input_date").attr("disabled", true)
-			$("#input_image").attr("disabled", true)
+			function checkNebpay() {
+				console.log("check nebpay")
 
-			if(typeof(webExtensionWallet) === "undefined") {
-				console.log("check webExtensionWallet undefined")
-				//alert ("Extension wallet is not installed, please install it first.")
-				$("#noExtension").removeClass("hide")
-			} else {
-				console.log("check webExtensionWallet defined")
-				$("#submit_value").attr("disabled", false)
-				$("#record_btn").attr("disabled", false)
-				$("#input_date").attr("disabled", false)
-				$("#input_image").attr("disabled", false)
+				//to check if the extension is installed
+				//if the extension is installed, var "webExtensionWallet" will be injected in to web page
+				if(typeof(webExtensionWallet) === "undefined") {
+					//alert ("Extension wallet is not installed, please install it first.")
+					$("#noExtension").removeClass("hide")
+				} else {
+					$("#noExtension").addClass("hide")
+				}
 			}
 
-			var offset = 1; // 读取位置
-			var limit = 100000000000; // 条数
-
-			var dappAddress = "n1h2z7BVW8feCvbQzHeXS8NgQFcjYWei1iV"; // test合约地址
-			var intervalFunc; // 记录定时器
-			var postData = new Map(); // 记录数据
-
 			//点击记录
-			$("#record_btn").click(function() {
+			$("#submit").click(function() {
 				var submit_content = $("#submit_value").val();
 				console.log("imagesource  " + imageSource);
 				var submit_imageSource = imageSource;
+
 				var submit_date = $("#input_date").val();
 				var to = dappAddress;
 				var value = "0";
@@ -161,6 +388,7 @@
 
 				if(result === 'null') {
 					console.log("result  null")
+					getList(offset, limit, false)
 				} else {
 					//if result is not null, then it should be "return value" or "error message"
 					try {
@@ -169,185 +397,191 @@
 						//result is the error message
 					}
 				}
-
+				imageSource = "";
 				$("#submit_value").val("");
+
 			}
-			
-			$("#search_btn").click(function(){
-				console.log("search_btn_onclick")
-				var search_value = $("#search_value").val();
-				
-				var offset = 1;
-				var limit = 1000;
-				
-				var to = dappAddress;
-				var value = "0";
-				var callFunction = "getList";
-				var callArgs = "[\"" + offset + "\",\"" + limit + "\"]"; // 可分页，[offset, limit]
-				
-				nebPay.simulateCall(to, value, callFunction, callArgs, { //使用nebpay的simulateCall接口去执行get查询, 模拟执行.不发送交易,不上链
-					callback: getListCallback //指定回调函数
+
+			// 给input  date设置默认值
+			var now = new Date();
+			//格式化日，如果小于9，前面补0
+			var day = ("0" + now.getDate()).slice(-2);
+			//格式化月，如果小于9，前面补0
+			var month = ("0" + (now.getMonth() + 1)).slice(-2);
+			//拼装完整日期格式
+			var today = now.getFullYear() + "-" + (month) + "-" + (day);
+			//完成赋值
+			$('#input_date').val(today);
+		</script>
+
+		<script>
+			window.onload = function() {
+				var wallInfo = getWallectInfo();
+				var currentAddress;
+
+				function getWallectInfo() {
+					window.postMessage({
+						"target": "contentscript",
+						"data": {},
+						"method": "getAccount",
+					}, "*");
+					window.addEventListener('message', function(e) {
+						if(e.data && e.data.data) {
+							if(e.data.data.account) { //这就是当前钱包中的地址
+								currentAddress = e.data.data.account
+								console.log("currentAddress-----" + currentAddress)
+							}
+						}
+					});
+				}
+
+				var waterfall = new WaterFall({
+					container: '#waterfall',
+					pins: ".pin",
+					loader: '#loader',
+					gapHeight: 20,
+					gapWidth: 20,
+					pinWidth: 216,
+					threshold: 1000
 				});
-			})
-			
-//			var getList = function(offset, limit) {
-//
-//				var to = dappAddress;
-//				var value = "0";
-//				var callFunction = "getList";
-//				var callArgs = "[\"" + offset + "\",\"" + limit + "\"]"; // 可分页，[offset, limit]
-//				nebPay.simulateCall(to, value, callFunction, callArgs, { //使用nebpay的simulateCall接口去执行get查询, 模拟执行.不发送交易,不上链
-//					callback: getListCallback //指定回调函数
-//				});
-//			};
-			
-			//return of getListCallback,
-			function getListCallback(resp) {
-				console.log("response of getListCallback resp: " + JSON.stringify(resp))
 
-				if(resp.execute_err === '') {
-					var result = JSON.parse(resp.result);
+				var dappAddress = "n1rUjLELfye9yFqSRfvsrTayakDeNSynZTW"; // 測試合约地址
 
-					for(var i = 0; i < result.length; i++) {
-						var postObj = result[i];
-						postData.set(offset.toString(), postObj);
-						var text = "<p class='texts'>"
-						postObj.postContent + "</p>"
-						$("#textBox").append(text)
-						img_area.innerHTML = '<div class="sitetip"></div><img src="' + postObj.postImageSource + '" alt=""/>';
-						offset += 1;
+				var NebPay = require("nebpay"); //https://github.com/nebulasio/nebPay
+				var nebPay = new NebPay();
+				// 默认获取列表，后续做定时获取更新
+				var offset = 1;
+				var limit = 20;
+				var postData = new Map(); // 记录数据
+				var datas = [];
+
+				
+				
+				var loadfunc = function(){
+					setTimeout(function() {
+						waterfall.off('load',loadfunc)
+						getList(offset, limit, false)
+						
+					}, 1000)
+				}
+				
+				waterfall.on("load", loadfunc);
+				
+				function getList(offset, limit) {
+					var to = dappAddress;
+					var value = "0";
+					var callFunction = "getList";
+					var callArgs = "[\"" + offset + "\",\"" + limit + "\"]"; // 可分页，[offset, limit]
+					console.log("dddddd--offset---" + offset)
+					nebPay.simulateCall(to, value, callFunction, callArgs, { //使用nebpay的simulateCall接口去执行get查询, 模拟执行.不发送交易,不上链
+						callback: getListCallback //指定回调函数
+					});
+				};
+
+				//return of getListCallback,
+				function getListCallback(resp) {
+					console.log("response of getListCallback resp: " + JSON.stringify(resp) + "-----" + offset)
+
+					if(resp.execute_err === '') {
+						var result = JSON.parse(resp.result);
+
+						var arr = [];
+
+						for(var i = 0; i < result.length; i++) {
+							var postObj = result[i];
+							postData.set(postObj.postID.toString(), postObj);
+							arr.push('<div class="pin"><img src="' + postObj.postImageSource + '" class="img" alt=""> <p class="description">' +
+								postObj.postContent + '</p><div class="user_info_bg"><font class = "user_info_name" > 星云同学 </font><button type="button" class="dashang" data-index=' + postObj.postID + '>赏</button></div> </div>')
+
+						}
+
+						waterfall.append(arr.join(''), '.img')
+						offset++;
+					} else {
+						waterfall.off('load', getList())
+					}
+
+				}
+
+				document.getElementById("waterfall").onclick = function(event) {
+					var event = event || window.event;
+					var target = event.target || event.srcElement;
+					console.log(target.className)
+					if(target.className === 'dashang') {
+						var key = target.getAttribute('data-index')
+						var obj = postData.get(key)
+						var authorId = obj.author
+						if(authorId = currentAddress) {
+							alert("不能对自己打赏")
+
+						} else {
+							//打賞NAS
+							nebPay.pay(authorId, 0, {
+								callback: payCallback
+							});
+						}
+
 					}
 				}
+
+				function payCallback(resp) {
+
+					var result = resp.result
+
+					console.log("dddddddddd------paycallback--" + result)
+					if(result === 'null') {
+						console.log("payCallback-result  null")
+						getList(offset, limit, false)
+					} else {
+						//if result is not null, then it should be "return value" or "error message"
+						try {
+							result = JSON.parse(result)
+						} catch(err) {
+							//result is the error message
+						}
+					}
+				}
+
 			}
 		</script>
-		<!--<script>
-			var NebPay = require("nebpay"); //https://github.com/nebulasio/nebPay
-			var nebPay = new NebPay();
 
-			document.addEventListener("DOMContentLoaded", function() {
-				$("#submit_value").attr("disabled", true)
-				$("#record_btn").attr("disabled", true)
-				$("#img_area").attr("disabled", true)
-				$("#input_date").attr("disabled", true)
-				$("#input_image").attr("disabled", true)
-				console.log("web page loaded...")
-				setTimeout(checkNebpay, 100);
+		<script type="text/javascript">
+			$(function() {
+				var $img = $('<img alt="Top_arrow" class="top_arrow" id="top_arrow" src="./img/top.png" />');
+				$("body").append($img);
+				$(window).scroll(
+					function() {
+						$(window).scrollTop() > 20 ? $img.fadeIn(400) : $img.fadeOut(400)
+					});
+				$("body, html").scroll(
+					function() {
+						$("body,html").scrollTop() > 20 ? $img.fadeIn(400) : $img.fadeOut(400)
+					});
+				$img.click(
+					function() {
+						$("body,html").animate({
+							scrollTop: 0
+						}, 400);
+					});
+
+				$("#top_arrow").hide(),
+					$(window).scroll(
+						function() {
+							$(window).scrollTop() > 20 ? $("#top_arrow").fadeIn(400) : $("#top_arrow").fadeOut(400)
+						}),
+					$("body, html").scroll(
+						function() {
+							$("body,html").scrollTop() > 20 ? $("#top_arrow").fadeIn(400) : $("#top_arrow").fadeOut(400)
+						}),
+					$("#top_arrow").click(
+						function() {
+							$("body,html").animate({
+								scrollTop: 0
+							}, 400);
+						})
+
 			});
-
-			function checkNebpay() {
-				console.log("check nebpay")
-
-				//to check if the extension is installed
-				//if the extension is installed, var "webExtensionWallet" will be injected in to web page
-				if(typeof(webExtensionWallet) === "undefined") {
-					console.log("check webExtensionWallet undefined")
-					//alert ("Extension wallet is not installed, please install it first.")
-					$("#noExtension").removeClass("hide")
-				} else {
-					console.log("check webExtensionWallet defined")
-					$("#submit_value").attr("disabled", false)
-					$("#record_btn").attr("disabled", false)
-					$("#input_date").attr("disabled", false)
-					$("#input_image").attr("disabled", false)
-				}
-			}
-
-			
-
-			var offset = 1; // 读取位置
-			var limit = 100000000000; // 条数
-
-			var dappAddress = "n1q2C6LTnzvosnuJZQnBxxUAbXB8Pa32wGr"; // 主网合约地址
-			var intervalFunc; // 记录定时器
-			var postData = new Map(); // 记录数据
-
-			var getList = function(offset, limit) {
-
-				var to = dappAddress;
-				var value = "0";
-				var callFunction = "getList";
-				var callArgs = "[\"" + offset + "\",\"" + limit + "\"]"; // 可分页，[offset, limit]
-				nebPay.simulateCall(to, value, callFunction, callArgs, { //使用nebpay的simulateCall接口去执行get查询, 模拟执行.不发送交易,不上链
-					callback: getListCallback //指定回调函数
-				});
-			};
-
-			//return of getListCallback,
-			function getListCallback(resp) {
-				console.log("response of getListCallback resp: " + JSON.stringify(resp))
-
-				if(resp.execute_err === '') {
-					var result = JSON.parse(resp.result);
-
-					for(var i = 0; i < result.length; i++) {
-						var postObj = result[i];
-						postData.set(offset.toString(), postObj);
-						var text = "<p class='texts'>"
-						postObj.content + "</p>"
-						$("#textBox").append(text)
-						offset += 1;
-					}
-				}
-			}
-
-			// 默认获取列表，后续做定时获取更新
-			getList(offset, limit, false);
-
-			//点击记录
-			$("#record_btn").click(function() {
-				var submit_content = $("#submit_value").val();
-				var submit_imageSource = imageSource;
-				var submit_date = $("#input_date").val();
-				var to = dappAddress;
-				var value = "0";
-				var callFunction = "save";
-				var callArgs = "[\"" + postContent + "\",\"" + postImageSource + "\",\"" + postDate + "\"]"
-
-				nebPay.call(to, value, callFunction, callArgs, { //使用nebpay的call接口去调用合约,
-					callback: cbPush
-				});
-			})
-
-			function cbPush(resp) {
-				console.log("response of cbPush resp: " + JSON.stringify(resp))
-
-				getLastItemCallback(resp);
-
-				intervalFunc = setInterval("getLast()", 5 * 1000)
-				
-				var result = ""; //JSON.parse(resp.result);
-
-				if(result === 'null') {
-					$(".add_banner").addClass("hide");
-					$(".result_success").addClass("hide");
-
-					$("#result_faile_add").text(result.postTitle)
-
-					$(".result_faile").removeClass("hide");
-				} else {
-					//if result is not null, then it should be "return value" or "error message"
-					try {
-						result = JSON.parse(result)
-					} catch(err) {
-						//result is the error message
-					}
-
-//					var tip = "温馨提示：您的话已在送往北极星的路上... (一旦到达，任何人将无法删除或者修改)"
-//
-//					$(".add_banner").addClass("hide");
-//					$(".result_faile").addClass("hide");
-//
-//					$("#search_banner").text($("#submit_value").val())
-//					$("#search_result").text(tip) //result.value
-//
-//					// var authorText = result.name + " ,  " + "  Account: " + result.author;
-//					// $("#submit_result_author").text(result.author)
-//					$(".result_success").removeClass("hide");
-				}
-
-				$("#submit_value").val("");
-			}
-		</script>-->
+		</script>
 
 	</body>
 

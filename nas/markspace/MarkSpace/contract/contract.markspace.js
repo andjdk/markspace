@@ -96,5 +96,6 @@ MarkSpace.prototype = {
         }
         return result;
     }
+    
 };
 module.exports = MarkSpace;
