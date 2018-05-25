@@ -3,7 +3,8 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>纪念空间</title>
+		<title>NAS碎片空间</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
 
 		<link rel="stylesheet" href="lib/bootstrap-4.0.0-dist/css/bootstrap.min.css">
@@ -22,7 +23,6 @@
 				width: 100%;
 				height: auto;
 				text-align: center;
-				
 			}
 			
 			.background {
@@ -73,7 +73,6 @@
 				width: 100px;
 				height: 100px;
 				float: left;
-				
 			}
 			
 			.preview_right {
@@ -106,7 +105,6 @@
 				font-size: 18px;
 				border-radius: 6px;
 				padding-left: 10px;
-				
 			}
 			
 			.btn_publish {
@@ -252,27 +250,28 @@
 			}
 		</style>
 	</head>
-	
+
 	<script>
 		function isPC() {
-            var userAgentInfo = navigator.userAgent;
-            var Agents = ["Android", "iPhone",
-                        "SymbianOS", "Windows Phone",
-                        "iPad", "iPod"];
-            var flag = true;
-            for (var v = 0; v < Agents.length; v++) {
-                if (userAgentInfo.indexOf(Agents[v]) > 0) {
-                    flag = false;
-                    break;
-                }
-            }
-            return flag;
-        }
-        if(!isPC()){
-            alert("暂时不支持手机操作，请到电脑上用chrome浏览器操作。");
-            window.opener=null;    
+			var userAgentInfo = navigator.userAgent;
+			var Agents = ["Android", "iPhone",
+				"SymbianOS", "Windows Phone",
+				"iPad", "iPod"
+			];
+			var flag = true;
+			for(var v = 0; v < Agents.length; v++) {
+				if(userAgentInfo.indexOf(Agents[v]) > 0) {
+					flag = false;
+					break;
+				}
+			}
+			return flag;
+		}
+		if(!isPC()) {
+			alert("暂时不支持手机操作，请到电脑上用chrome浏览器操作。");
+			window.opener = null;
 			window.close();
-        }
+		}
 	</script>
 
 	<body class="background">
@@ -280,7 +279,7 @@
 			<font color="white">参与
 				<a href="https://incentive.nebulas.io/cn/signup.html?invite=Eig3m">星云开发者激励计划</a>，提交作品即可获得110NAS，更有机会获得最高20,000NAS的大奖！ 注意: 请安装
 				<a target="_blank" href="https://github.com/ChengOrangeJu/WebExtensionWallet" style="color: red;">星云钱包拓展</font>
-			
+
 		</div>
 
 		<br />
@@ -302,7 +301,7 @@
 
 				<font color="white" size="4px">那一刻的时间：</font>
 				<input id="input_date" type="date" />
-				<input id="username" class="username" type="text" placeholder="星云同学" maxlength="5">
+				<input id="userName" class="username" type="text" placeholder="星云同学" maxlength="5">
 				<button id="submit" class="btn btn-primary">&nbsp;&nbsp;&nbsp;&nbsp;发布碎片&nbsp;&nbsp;&nbsp;&nbsp;</button>
 
 			</div>
@@ -312,9 +311,14 @@
 		<br />
 		<br />
 		<br />
-		
-		<h1 id="fh5co-logo" class="title_desc"><font color="white" size="6px">全部碎片</font></h1>
-			<br />
+
+		<div align="baseline" class="title_desc">
+			<font id="all_debris" color="white" size="6px" >全部碎片</font>
+			&nbsp;&nbsp;
+			<font id="private_debris" color="antiquewhite" size="5px">个人碎片</font>
+		</div>
+
+		<br />
 		<div id="waterfall" class="water"></div>
 
 		<div class="loader" id="loader">
@@ -329,13 +333,12 @@
 				<div></div>
 			</div>
 		</div>
-		
 
 		<!--添加图片-->
 		<script>
 			var img_area = document.getElementById("img_area");
 			var imagePath = document.getElementById("add_pic_link");
-
+			var imageSource = "";
 			imagePath.addEventListener("change", function visiblePic() {
 				console.log(imagePath.value);
 
@@ -346,7 +349,8 @@
 		</script>
 
 		<script>
-			var dappAddress = "n1rUjLELfye9yFqSRfvsrTayakDeNSynZTW"; // 測試合约地址
+			var dappAddress = "n1hRAGaWU9m1sSqrSZuqyYhUYMpr32DSCnr"; // 測試合约地址
+			//			var hash="76848b63742fd3ac8f03e28348485825fae43e6df81b74beffbf38428677a071"
 
 			var NebPay = require("nebpay"); //https://github.com/nebulasio/nebPay
 			var nebPay = new NebPay();
@@ -368,19 +372,38 @@
 			//点击记录
 			$("#submit").click(function() {
 				var submit_content = $("#submit_value").val();
-				console.log("imagesource  " + imageSource);
+
 				var submit_imageSource = imageSource;
 
 				var submit_date = $("#input_date").val();
+				var username = $("#userName").val();
+				if(isEmpty(username)) {
+					username = "星云同学";
+				}
 				var to = dappAddress;
 				var value = "0";
 				var callFunction = "save";
-				var callArgs = "[\"" + submit_imageSource + "\",\"" + submit_content + "\",\"" + submit_date + "\"]"
+				var callArgs = "[\"" + submit_imageSource + "\",\"" + submit_content + "\",\"" + submit_date + "\",\"" + username + "\"]"
 
 				nebPay.call(to, value, callFunction, callArgs, { //使用nebpay的call接口去调用合约,
 					callback: cbPush
 				});
 			})
+
+			function isEmpty(obj) {
+				if(obj === null) return true;
+				if(typeof obj === 'undefined') {
+					return true;
+				}
+				if(typeof obj === 'string') {
+					if(obj === "") {
+						return true;
+					}
+					var reg = new RegExp("^([ ]+)|([　]+)$");
+					return reg.test(obj);
+				}
+				return false;
+			}
 
 			function cbPush(resp) {
 				var result = resp.result
@@ -399,6 +422,8 @@
 				}
 				imageSource = "";
 				$("#submit_value").val("");
+				$("#add_pic_link").val("");
+				img_area.innerHTML = '<img width="100px" height="100px" src="' + imageSource + '" alt=""/>';
 
 			}
 
@@ -418,8 +443,9 @@
 			window.onload = function() {
 				var wallInfo = getWallectInfo();
 				var currentAddress;
-
-				function getWallectInfo() {
+			}
+			
+			function getWallectInfo() {
 					window.postMessage({
 						"target": "contentscript",
 						"data": {},
@@ -429,7 +455,6 @@
 						if(e.data && e.data.data) {
 							if(e.data.data.account) { //这就是当前钱包中的地址
 								currentAddress = e.data.data.account
-								console.log("currentAddress-----" + currentAddress)
 							}
 						}
 					});
@@ -445,34 +470,54 @@
 					threshold: 1000
 				});
 
-				var dappAddress = "n1rUjLELfye9yFqSRfvsrTayakDeNSynZTW"; // 測試合约地址
-
-				var NebPay = require("nebpay"); //https://github.com/nebulasio/nebPay
-				var nebPay = new NebPay();
 				// 默认获取列表，后续做定时获取更新
 				var offset = 1;
-				var limit = 20;
+				var limit = 1000;
 				var postData = new Map(); // 记录数据
 				var datas = [];
-
-				
-				
-				var loadfunc = function(){
+				var arrayMaps = new Array();
+				var loadfunc = function() {
 					setTimeout(function() {
-						waterfall.off('load',loadfunc)
+						waterfall.off('load', loadfunc)
 						getList(offset, limit, false)
-						
+
 					}, 1000)
 				}
-				
+
 				waterfall.on("load", loadfunc);
 				
-				function getList(offset, limit) {
+				var allDebris = document.getElementById("all_debris");
+				var privateDebris = document.getElementById("all_debris");
+
+				$("#all_debris").click(function() {
+					offset=1;
+					getList(offset, limit, false);
+					
+					
+				});
+
+				$("#private_debris").click(function() {
+					offset=1;
+					getList(offset, limit, true);
+					
+					
+					
+				});
+
+				function getList(offset, limit, isPrivate) {
 					var to = dappAddress;
 					var value = "0";
-					var callFunction = "getList";
-					var callArgs = "[\"" + offset + "\",\"" + limit + "\"]"; // 可分页，[offset, limit]
-					console.log("dddddd--offset---" + offset)
+					if(isPrivate) {
+						
+						var callFunction = "getPrivate";
+						var callArgs = "[\"" + currentAddress + "\",\"" + offset + "\",\"" + limit + "\"]"; // 可分页，[offset, limit]
+
+					} else {
+						
+						var callFunction = "getList";
+						var callArgs = "[\"" + offset + "\",\"" + limit + "\"]"; // 可分页，[offset, limit]
+					}
+
 					nebPay.simulateCall(to, value, callFunction, callArgs, { //使用nebpay的simulateCall接口去执行get查询, 模拟执行.不发送交易,不上链
 						callback: getListCallback //指定回调函数
 					});
@@ -489,9 +534,10 @@
 
 						for(var i = 0; i < result.length; i++) {
 							var postObj = result[i];
+
 							postData.set(postObj.postID.toString(), postObj);
-							arr.push('<div class="pin"><img src="' + postObj.postImageSource + '" class="img" alt=""> <p class="description">' +
-								postObj.postContent + '</p><div class="user_info_bg"><font class = "user_info_name" > 星云同学 </font><button type="button" class="dashang" data-index=' + postObj.postID + '>赏</button></div> </div>')
+							arr.push('<div class="pin"><img src="' + postObj.postImageSource + '" class="img" alt="" data-index=' + postObj.postID + '> <p class="description">' +
+								postObj.postContent + '</p><div class="user_info_bg"><font class = "user_info_name" >' + postObj.userName + ' </font><button type="button" class="dashang" data-index=' + postObj.postID + '>赏</button></div> </div>')
 
 						}
 
@@ -506,12 +552,14 @@
 				document.getElementById("waterfall").onclick = function(event) {
 					var event = event || window.event;
 					var target = event.target || event.srcElement;
-					console.log(target.className)
+
+					var key = target.getAttribute('data-index')
+					var obj = postData.get(key)
 					if(target.className === 'dashang') {
-						var key = target.getAttribute('data-index')
-						var obj = postData.get(key)
-						var authorId = obj.author
-						if(authorId = currentAddress) {
+						var authorId = obj.author.toString()
+
+						if(authorId == currentAddress) {
+
 							alert("不能对自己打赏")
 
 						} else {
@@ -521,6 +569,8 @@
 							});
 						}
 
+					} else if(target.className === 'img') { //进入详情页面
+						location.href = "detail.html?info=" + obj.postID;
 					}
 				}
 
@@ -528,10 +578,9 @@
 
 					var result = resp.result
 
-					console.log("dddddddddd------paycallback--" + result)
 					if(result === 'null') {
 						console.log("payCallback-result  null")
-						getList(offset, limit, false)
+
 					} else {
 						//if result is not null, then it should be "return value" or "error message"
 						try {
@@ -541,8 +590,6 @@
 						}
 					}
 				}
-
-			}
 		</script>
 
 		<script type="text/javascript">

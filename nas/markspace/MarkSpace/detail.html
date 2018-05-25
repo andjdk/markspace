@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+
+		<title>NAS碎片空间-碎片详情</title>
+		<link rel="stylesheet" href="lib/bootstrap-4.0.0-dist/css/bootstrap.min.css">
+		<script src=lib/jquery-3.3.1.min.js></script>
+		<script src=lib/nebPay.js></script>
+		<script src=lib/bootstrap-4.0.0-dist/js/bootstrap.min.js></script>
+		<style>
+			body {
+				background-size: 100%;
+				width: 100%;
+				height: auto;
+				padding-top: 100px;
+			}
+			
+			.background {
+				background-image: url(img/bg.jpg);
+				background-attachment: fixed;
+				background-repeat: no-repeat;
+			}
+			
+			.user_info {
+				width: 360px;
+				display: inline-block;
+				padding-bottom: 10px;
+			}
+			
+			.container {
+				width: 560px;
+				display: flex;
+				justify-content: center;
+			}
+			
+			.div1 {
+				margin-top: 20%;
+				position: fixed;
+				z-index: 800;
+				height: auto;
+				padding-right: 60%;
+			}
+			
+			.div2 {
+				margin-top: 20%;
+				position: fixed;
+				z-index: 800;
+				height: auto;
+				margin-left: 100px;
+				padding-left: 50%;
+			}
+			
+			.img_pic {
+				width: 560px;
+				height: auto;
+			}
+			
+			.text_content {
+				width: 100%;
+				overflow: hidden;
+				word-wrap: break-word;
+				text-align: left;
+				padding-bottom: 100px;
+			}
+		</style>
+
+	</head>
+
+	<body class="background">
+
+		<div class="container">
+			<!--<div class="div1">
+				<img id="left_arrow" src="img/left_arrow.png"></img>
+			</div>-->
+			<div>
+				<font id="author" color="white" class="user_info"></font>
+				<font id="date" color="white"></font>
+				<p id="pic"></p>
+				<font id="content" color="white" class="text_content"></font>
+			</div>
+			<!--<div class="div2">
+				<img id="right_arrow" src="img/right.png"></img>
+			</div>-->
+
+		</div>
+
+		
+		<script>
+			//获取url中的参数
+			function getUrlParam(name) {
+				var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+				var r = window.location.search.substr(1).match(reg); //匹配目标参数
+				if(r != null) return decodeURI(r[2]);
+				return null; //返回参数值
+			}
+			var id = getUrlParam("info");
+
+			var img_area = document.getElementById("pic");
+			var isRight = false;
+
+			var dappAddress = "n1hRAGaWU9m1sSqrSZuqyYhUYMpr32DSCnr"; // 測試合约地址
+
+			var NebPay = require("nebpay"); //https://github.com/nebulasio/nebPay
+			var nebPay = new NebPay();
+			getDetailInfo(id);
+
+			function getDetailInfo(index) {
+				var to = dappAddress;
+				var value = "0";
+				var callFunction = "getDetail";
+				var callArgs = "[\"" + (index) + "\"]";
+				nebPay.simulateCall(to, value, callFunction, callArgs, { //使用nebpay的simulateCall接口去执行get查询, 模拟执行.不发送交易,不上链
+					callback: getCallback //指定回调函数
+				});
+			}
+
+			
+			function getCallback(resp) {
+				if(resp.execute_err === '') {
+					var result = JSON.parse(resp.result);
+					if(result == null) {
+						alert("没有更多内容了")
+						
+						return
+					}
+
+					$("#author").html("作者：" + result.userName);
+					$("#date").html("那刻日期：" + result.postDate);
+					img_area.innerHTML = '<div><img src="' + result.postImageSource + '" alt="" class="img_pic" /></div>';
+					$("#content").html(result.postContent);
+				}
+			}
+
+//			$("#left_arrow").click(function() {
+//				if(id>1){
+//					id--;
+//				}
+//				getDetailInfo(id);
+//			});
+//
+//			$("#right_arrow").click(function() {
+//				
+//				id++;		
+//			
+//				getDetailInfo(id);
+//			});
+
+			
+		</script>
+
+	</body>
+
+</html>
