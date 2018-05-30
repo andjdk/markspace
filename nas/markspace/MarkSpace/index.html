@@ -8,8 +8,6 @@
 		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
 
 		<link rel="stylesheet" href="lib/bootstrap-4.0.0-dist/css/bootstrap.min.css">
-		<!--<link rel="stylesheet" href="css/normalize.css">-->
-		<!--<link rel="stylesheet" href="css/index.css">-->
 
 		<script src="lib/waterfall.js"></script>
 		<script src=lib/jquery-3.3.1.min.js></script>
@@ -28,7 +26,7 @@
 			.background {
 				background-image: url(img/bg.jpg);
 				background-attachment: fixed;
-				background-repeat: no-repeat;
+				/*background-repeat: ;*/
 			}
 			
 			.title_desc {
@@ -277,8 +275,8 @@
 	<body class="background">
 		<div>
 			<font color="white">参与
-				<a href="https://incentive.nebulas.io/cn/signup.html?invite=Eig3m">星云开发者激励计划</a>，提交作品即可获得110NAS，更有机会获得最高20,000NAS的大奖！ 注意: 请安装
-				<a target="_blank" href="https://github.com/ChengOrangeJu/WebExtensionWallet" style="color: red;">星云钱包拓展</font>
+				<a href="https://incentive.nebulas.io/cn/signup.html?invite=Eig3m">星云开发者激励计划</a>，提交作品即可获得110NAS，更有机会获得最高20,000NAS的大奖！ 注意: 请使用Chrome浏览器安装
+				<a target="_blank" href="https://github.com/ChengOrangeJu/WebExtensionWallet" style="color: red;">星云钱包拓展插件</font>
 
 		</div>
 
@@ -286,7 +284,7 @@
 		<br />
 		<h1 id="fh5co-logo" class="title_desc"><a href="index.html"><font color="white" >碎片空间</font></a></h1>
 		<div class="title_desc">
-			<font color="white" size="4px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;用碎片化的时间，来记录你的一生 。写在星云之上，永久保留。</font>
+			<font color="white" size="4px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;用碎片化的时间，来记录你的一生 。写在星云之上，永久保留那刻的时光。</font>
 		</div>
 
 		<textarea id="submit_value" type="text" placeholder="那刻的想法..." maxlength="300"></textarea>
@@ -313,9 +311,9 @@
 		<br />
 
 		<div align="baseline" class="title_desc">
-			<font id="all_debris" color="white" size="6px" >全部碎片</font>
+			<font id="all_debris" color="white" size="6px">全部碎片</font>
 			&nbsp;&nbsp;
-			<font id="private_debris" color="antiquewhite" size="5px">个人碎片</font>
+			<!--<font id="private_debris" color="antiquewhite" size="5px">个人碎片</font>-->
 		</div>
 
 		<br />
@@ -340,12 +338,13 @@
 			var imagePath = document.getElementById("add_pic_link");
 			var imageSource = "";
 			imagePath.addEventListener("change", function visiblePic() {
-				console.log(imagePath.value);
-
+				
 				imageSource = imagePath.value;
+				
 				img_area.innerHTML = '<img width="100px" height="100px" src="' + imageSource + '" alt=""/>';
 
 			});
+
 		</script>
 
 		<script>
@@ -411,7 +410,7 @@
 
 				if(result === 'null') {
 					console.log("result  null")
-					getList(offset, limit, false)
+
 				} else {
 					//if result is not null, then it should be "return value" or "error message"
 					try {
@@ -444,152 +443,151 @@
 				var wallInfo = getWallectInfo();
 				var currentAddress;
 			}
-			
+
 			function getWallectInfo() {
-					window.postMessage({
-						"target": "contentscript",
-						"data": {},
-						"method": "getAccount",
-					}, "*");
-					window.addEventListener('message', function(e) {
-						if(e.data && e.data.data) {
-							if(e.data.data.account) { //这就是当前钱包中的地址
-								currentAddress = e.data.data.account
-							}
+				window.postMessage({
+					"target": "contentscript",
+					"data": {},
+					"method": "getAccount",
+				}, "*");
+				window.addEventListener('message', function(e) {
+					if(e.data && e.data.data) {
+						if(e.data.data.account) { //这就是当前钱包中的地址
+							currentAddress = e.data.data.account
 						}
-					});
+					}
+				});
+			}
+
+			var waterfall = new WaterFall({
+				container: '#waterfall',
+				pins: ".pin",
+				loader: '#loader',
+				gapHeight: 20,
+				gapWidth: 20,
+				pinWidth: 216,
+				threshold: 1000
+			});
+
+			// 默认获取列表，后续做定时获取更新
+			var offset = 1;
+			var limit = 1000;
+			var postData = new Map(); // 记录数据
+			var datas = [];
+			var arrayMaps = new Array();
+			var loadfunc = function() {
+				setTimeout(function() {
+					waterfall.off('load', loadfunc)
+					getList(offset, limit, false)
+
+				}, 1000)
+			}
+
+			waterfall.on("load", loadfunc);
+
+			var allDebris = document.getElementById("all_debris");
+			var privateDebris = document.getElementById("all_debris");
+
+			//				$("#all_debris").click(function() {
+			//					offset=1;
+			//					getList(offset, limit, false);
+			//					
+			//					
+			//				});
+			//
+			//				$("#private_debris").click(function() {
+			//					offset=1;
+			//					getList(offset, limit, true);
+			//					
+			//				});
+
+			function getList(offset, limit, isPrivate) {
+				var to = dappAddress;
+				var value = "0";
+				if(isPrivate) {
+
+					var callFunction = "getPrivate";
+					var callArgs = "[\"" + currentAddress + "\",\"" + offset + "\",\"" + limit + "\"]"; // 可分页，[offset, limit]
+
+				} else {
+
+					var callFunction = "getList";
+					var callArgs = "[\"" + offset + "\",\"" + limit + "\"]"; // 可分页，[offset, limit]
 				}
 
-				var waterfall = new WaterFall({
-					container: '#waterfall',
-					pins: ".pin",
-					loader: '#loader',
-					gapHeight: 20,
-					gapWidth: 20,
-					pinWidth: 216,
-					threshold: 1000
+				nebPay.simulateCall(to, value, callFunction, callArgs, { //使用nebpay的simulateCall接口去执行get查询, 模拟执行.不发送交易,不上链
+					callback: getListCallback //指定回调函数
 				});
+			};
 
-				// 默认获取列表，后续做定时获取更新
-				var offset = 1;
-				var limit = 1000;
-				var postData = new Map(); // 记录数据
-				var datas = [];
-				var arrayMaps = new Array();
-				var loadfunc = function() {
-					setTimeout(function() {
-						waterfall.off('load', loadfunc)
-						getList(offset, limit, false)
+			//return of getListCallback,
+			function getListCallback(resp) {
+				console.log("response of getListCallback resp: " + JSON.stringify(resp) + "-----" + offset)
 
-					}, 1000)
+				if(resp.execute_err === '') {
+					var result = JSON.parse(resp.result);
+
+					var arr = [];
+
+					for(var i = 0; i < result.length; i++) {
+						var postObj = result[i];
+
+						postData.set(postObj.postID.toString(), postObj);
+						arr.push('<div class="pin"><img src="' + postObj.postImageSource + '" class="img" alt="" data-index=' + postObj.postID + '> <p class="description">' +
+							postObj.postContent + '</p><div class="user_info_bg"><font class = "user_info_name" >' + postObj.userName + ' </font><button type="button" class="dashang" data-index=' + postObj.postID + '>赏</button></div> </div>')
+
+					}
+
+					waterfall.append(arr.join(''), '.img')
+					offset++;
+
+				} else {
+					waterfall.off('load', getList())
 				}
 
-				waterfall.on("load", loadfunc);
-				
-				var allDebris = document.getElementById("all_debris");
-				var privateDebris = document.getElementById("all_debris");
+			}
 
-				$("#all_debris").click(function() {
-					offset=1;
-					getList(offset, limit, false);
-					
-					
-				});
+			document.getElementById("waterfall").onclick = function(event) {
+				var event = event || window.event;
+				var target = event.target || event.srcElement;
 
-				$("#private_debris").click(function() {
-					offset=1;
-					getList(offset, limit, true);
-					
-					
-					
-				});
+				var key = target.getAttribute('data-index')
+				var obj = postData.get(key)
+				if(target.className === 'dashang') {
+					var authorId = obj.author.toString()
 
-				function getList(offset, limit, isPrivate) {
-					var to = dappAddress;
-					var value = "0";
-					if(isPrivate) {
-						
-						var callFunction = "getPrivate";
-						var callArgs = "[\"" + currentAddress + "\",\"" + offset + "\",\"" + limit + "\"]"; // 可分页，[offset, limit]
+					if(authorId == currentAddress) {
+
+						alert("不能对自己打赏")
 
 					} else {
-						
-						var callFunction = "getList";
-						var callArgs = "[\"" + offset + "\",\"" + limit + "\"]"; // 可分页，[offset, limit]
+						//打賞NAS
+						nebPay.pay(authorId, 0, {
+							callback: payCallback
+						});
 					}
 
-					nebPay.simulateCall(to, value, callFunction, callArgs, { //使用nebpay的simulateCall接口去执行get查询, 模拟执行.不发送交易,不上链
-						callback: getListCallback //指定回调函数
-					});
-				};
-
-				//return of getListCallback,
-				function getListCallback(resp) {
-					console.log("response of getListCallback resp: " + JSON.stringify(resp) + "-----" + offset)
-
-					if(resp.execute_err === '') {
-						var result = JSON.parse(resp.result);
-
-						var arr = [];
-
-						for(var i = 0; i < result.length; i++) {
-							var postObj = result[i];
-
-							postData.set(postObj.postID.toString(), postObj);
-							arr.push('<div class="pin"><img src="' + postObj.postImageSource + '" class="img" alt="" data-index=' + postObj.postID + '> <p class="description">' +
-								postObj.postContent + '</p><div class="user_info_bg"><font class = "user_info_name" >' + postObj.userName + ' </font><button type="button" class="dashang" data-index=' + postObj.postID + '>赏</button></div> </div>')
-
-						}
-
-						waterfall.append(arr.join(''), '.img')
-						offset++;
-					} else {
-						waterfall.off('load', getList())
-					}
-
+				} else if(target.className === 'img') { //进入详情页面
+					window.open("detail.html?info=" + obj.postID);
 				}
+			}
 
-				document.getElementById("waterfall").onclick = function(event) {
-					var event = event || window.event;
-					var target = event.target || event.srcElement;
+			function payCallback(resp) {
 
-					var key = target.getAttribute('data-index')
-					var obj = postData.get(key)
-					if(target.className === 'dashang') {
-						var authorId = obj.author.toString()
+				var result = resp.result
 
-						if(authorId == currentAddress) {
+				if(result === 'null') {
+					console.log("payCallback-result  null")
 
-							alert("不能对自己打赏")
-
-						} else {
-							//打賞NAS
-							nebPay.pay(authorId, 0, {
-								callback: payCallback
-							});
-						}
-
-					} else if(target.className === 'img') { //进入详情页面
-						location.href = "detail.html?info=" + obj.postID;
+				} else {
+					//if result is not null, then it should be "return value" or "error message"
+					try {
+						result = JSON.parse(result)
+					} catch(err) {
+						//result is the error message
 					}
 				}
-
-				function payCallback(resp) {
-
-					var result = resp.result
-
-					if(result === 'null') {
-						console.log("payCallback-result  null")
-
-					} else {
-						//if result is not null, then it should be "return value" or "error message"
-						try {
-							result = JSON.parse(result)
-						} catch(err) {
-							//result is the error message
-						}
-					}
-				}
+			}
 		</script>
 
 		<script type="text/javascript">
