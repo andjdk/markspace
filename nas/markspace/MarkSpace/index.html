@@ -37,6 +37,14 @@
 				text-align: left;
 			}
 			
+			.title_about {
+				width: 100%;
+				margin-top: 30px;
+				padding-left: 20%;
+				padding-right: 20%;
+				text-align: right;
+			}
+			
 			#submit_value {
 				width: 60%;
 				height: 200px;
@@ -283,6 +291,7 @@
 		<br />
 		<br />
 		<h1 id="fh5co-logo" class="title_desc"><a href="index.html"><font color="white" >碎片空间</font></a></h1>
+		<h4 class="title_about"><font color="white">关于碎片空间</font></h4>
 		<div class="title_desc">
 			<font color="white" size="4px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;用碎片化的时间，来记录你的一生 。写在星云之上，永久保留那刻的时光。</font>
 		</div>
@@ -298,7 +307,7 @@
 			<div class="preview_right">
 
 				<font color="white" size="4px">那一刻的时间：</font>
-				<input id="input_date" type="date" />
+				<input id="input_date" type="datetime" />
 				<input id="userName" class="username" type="text" placeholder="星云同学" maxlength="5">
 				<button id="submit" class="btn btn-primary">&nbsp;&nbsp;&nbsp;&nbsp;发布碎片&nbsp;&nbsp;&nbsp;&nbsp;</button>
 
@@ -348,9 +357,9 @@
 		</script>
 
 		<script>
-			var dappAddress = "n1hRAGaWU9m1sSqrSZuqyYhUYMpr32DSCnr"; // 測試合约地址
-			//			var hash="76848b63742fd3ac8f03e28348485825fae43e6df81b74beffbf38428677a071"
-
+			//var dappAddress = "n1hRAGaWU9m1sSqrSZuqyYhUYMpr32DSCnr"; // 測試合约地址
+						//var hash="76848b63742fd3ac8f03e28348485825fae43e6df81b74beffbf38428677a071"
+			var dappAddress = "n1z3PqXLFGDHQJyFBeDYG5vSY6WVxaCN7ea";//主网合约地址
 			var NebPay = require("nebpay"); //https://github.com/nebulasio/nebPay
 			var nebPay = new NebPay();
 			var postData = new Map();
@@ -376,9 +385,15 @@
 
 				var submit_date = $("#input_date").val();
 				var username = $("#userName").val();
+				
+				if(isEmpty(submit_content)){
+					alert("内容不能为空")
+					return
+				}
 				if(isEmpty(username)) {
 					username = "星云同学";
 				}
+				
 				var to = dappAddress;
 				var value = "0";
 				var callFunction = "save";
@@ -432,8 +447,11 @@
 			var day = ("0" + now.getDate()).slice(-2);
 			//格式化月，如果小于9，前面补0
 			var month = ("0" + (now.getMonth() + 1)).slice(-2);
+			
+			var hours = ("0" + now.getHours()).slice(-2);
+			var minutes = ("0" + now.getMinutes()).slice(-2);
 			//拼装完整日期格式
-			var today = now.getFullYear() + "-" + (month) + "-" + (day);
+			var today = now.getFullYear() + "-" + (month) + "-" + (day)+" "+hours +":"+minutes;
 			//完成赋值
 			$('#input_date').val(today);
 		</script>
