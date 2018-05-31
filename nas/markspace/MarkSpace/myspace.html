@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<title>我的碎片</title>
+		<meta name="viewport" content="width=device-width,initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+
+		<link rel="stylesheet" href="lib/bootstrap-4.0.0-dist/css/bootstrap.min.css">
+
+		<script src="lib/waterfall.js"></script>
+		<script src=lib/jquery-3.3.1.min.js></script>
+		<script src=lib/nebPay.js></script>
+		<script src=lib/bootstrap-4.0.0-dist/js/bootstrap.min.js></script>
+
+		<style type="text/css">
+			body {
+				background-size: 100%;
+				width: 100%;
+				height: auto;
+				text-align: center;
+			}
+			
+			.background {
+				background-image: url(img/bg.jpg);
+				background-attachment: fixed;
+				/*background-repeat: ;*/
+			}
+			#waterfall {
+				position: relative;
+				height: auto;
+				width: 100%;
+				margin-left: 20%;
+				margin-bottom: 200px;
+			}
+			
+			.pin {
+				position: absolute;
+				width: 216px;
+				font-size: 12px;
+				background-color: #fff;
+				box-shadow: 0 1px 3px rgba(0, 0, 0, .3);
+				transition: opacity .4s ease-in-out;
+			}
+			
+			.pin img {
+				display: block;
+				width: 100%;
+			}
+			
+			.description {
+				display: block;
+				padding: 0 10px;
+				margin: 10px 0;
+				line-height: 1.35em;
+				overflow: hidden;
+				word-wrap: break-word;
+				text-align: left;
+			}
+		</style>
+	</head>
+
+	<body class="background">
+		
+		<div id="waterfall" class="water"></div>
+
+	</body>
+
+	<script>
+		var dappAddress = "n1z3PqXLFGDHQJyFBeDYG5vSY6WVxaCN7ea";//主网合约地址
+			var NebPay = require("nebpay"); //https://github.com/nebulasio/nebPay
+			var nebPay = new NebPay();
+			var postData = new Map();
+			
+			var offset = 1;
+			var limit = 1000;
+			var datas = [];
+			var arrayMaps = new Array();
+			
+			window.onload = function() {
+				var wallInfo = getWallectInfo();
+			}
+			var currentAddress;
+			function getWallectInfo() {
+				window.postMessage({
+					"target": "contentscript",
+					"data": {},
+					"method": "getAccount",
+				}, "*");
+				window.addEventListener('message', function(e) {
+					if(e.data && e.data.data) {
+						if(e.data.data.account) { //这就是当前钱包中的地址
+							currentAddress = e.data.data.account
+						}
+					}
+				});
+			}
+
+			var waterfall = new WaterFall({
+				container: '#waterfall',
+				pins: ".pin",
+				loader: '#loader',
+				gapHeight: 20,
+				gapWidth: 20,
+				pinWidth: 216,
+				threshold: 1000
+			});
+
+			
+			var loadfunc = function() {
+				setTimeout(function() {
+					waterfall.off('load', loadfunc)
+					getList(offset, limit, false)
+
+				}, 1000)
+			}
+
+			waterfall.on("load", loadfunc);
+			
+			function getList(offset, limit, isPrivate) {
+				var to = dappAddress;
+				var value = "0";
+				if(isPrivate) {
+
+					var callFunction = "getPrivate";
+					var callArgs = "[\"" + currentAddress + "\",\"" + offset + "\",\"" + limit + "\"]"; // 可分页，[offset, limit]
+
+				} else {
+
+					var callFunction = "getList";
+					var callArgs = "[\"" + offset + "\",\"" + limit + "\"]"; // 可分页，[offset, limit]
+				}
+
+				nebPay.simulateCall(to, value, callFunction, callArgs, { //使用nebpay的simulateCall接口去执行get查询, 模拟执行.不发送交易,不上链
+					callback: getListCallback //指定回调函数
+				});
+			};
+
+			//return of getListCallback,
+			function getListCallback(resp) {
+				console.log("response of getListCallback resp: " + JSON.stringify(resp) + "-----" + offset)
+
+				if(resp.execute_err === '') {
+					var result = JSON.parse(resp.result);
+
+					var arr = [];
+
+					for(var i = 0; i < result.length; i++) {
+						var postObj = result[i];
+
+						postData.set(postObj.postID.toString(), postObj);
+						arr.push('<div class="pin"><img src="' + postObj.postImageSource + '" class="img" alt="" data-index=' + postObj.postID + '> <p class="description">' +
+							postObj.postContent + '</p><div class="user_info_bg"><font class = "user_info_name" >' + postObj.userName + ' </font></div> </div>')
+
+					}
+
+					waterfall.append(arr.join(''), '.img')
+					offset++;
+
+				} else {
+					waterfall.off('load', getList())
+				}
+
+			}
+
+			document.getElementById("waterfall").onclick = function(event) {
+				var event = event || window.event;
+				var target = event.target || event.srcElement;
+
+				var key = target.getAttribute('data-index')
+				var obj = postData.get(key)
+				if(target.className === 'img') { //进入详情页面
+						window.open("detail.html?info=" + obj.postID);
+				}
+			}
+
+	</script>
+</html>
