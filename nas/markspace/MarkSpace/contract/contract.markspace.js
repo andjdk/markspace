@@ -82,44 +82,13 @@ MarkSpace.prototype = {
 		}
 		return this.arrayMap.get(postID);
 	},
-
-	getPrivate: function(author,offset, limit) {
+	getPrivateList: function(currentAddress,offset, limit) {
 		offset = parseInt(offset);
 		limit = parseInt(limit);
 		if(offset > this.size) {
 			throw new Error("offset is not valid");
 		}
-		if(author = "") {
-			throw new Error("wallet address is empty")
-		}
 		
-		var number = offset + limit;
-		if(number > this.size) {
-			number = this.size;
-		}
-		
-		var result = new Array();
-		if(this.size > 0) {
-			for(var i = 0; i < this.size; i++) {
-				var text = this.arrayMap.get(i);
-				if(!text && typeof(text) != "undefined" && text != 0) {
-					break;
-				}
-				if(author == text.author) {
-					result.push(text)
-				}
-			}
-		}
-		result.reverse();
-		return result
-	},
-
-	getList: function(offset, limit) {
-		offset = parseInt(offset);
-		limit = parseInt(limit);
-		if(offset > this.size) {
-			throw new Error("offset is not valid");
-		}
 		var number = offset + limit;
 		if(number > this.size) {
 			number = this.size;
@@ -130,7 +99,34 @@ MarkSpace.prototype = {
 			if(!text && typeof(text) != "undefined" && text != 0) {
 				break;
 			}
-			result.push(text);
+			var authorId = text.author.toString().trim();
+			var currentAuthorId = currentAddress;
+			if(currentAuthorId == authorId) {
+				result.push(text)
+			}
+		}
+		result.reverse();
+		return result;
+	},
+
+	getList: function(offset, limit) {
+		offset = parseInt(offset);
+		limit = parseInt(limit);
+		if(offset > this.size) {
+			throw new Error("offset is not valid");
+		}
+		
+		var number = offset + limit;
+		if(number > this.size) {
+			number = this.size;
+		}
+		var result = new Array();
+		for(var i = offset; i < number; i++) {
+			var text = this.arrayMap.get(i);
+			if(!text && typeof(text) != "undefined" && text != 0) {
+				break;
+			}
+			result.push(text)
 		}
 		result.reverse();
 		return result;

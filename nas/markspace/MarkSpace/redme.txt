@@ -2,5 +2,7 @@ NAS碎片空间
 
 NAS碎片空间是一个可以匿名方式向世界倾诉，同时也可以永久记录生活中所有的那些值得纪念的时刻。比如2018年5月20日13点14分的那刻你是否也有留下些什么呢？如果还记得那就发布一个碎片，当所有碎片时间连接起来的那刻，就是一生的回忆。
 
-合约地址var dappAddress = "n1z3PqXLFGDHQJyFBeDYG5vSY6WVxaCN7ea";//主网合约地址
-主网合约Hash ：d8789ccaa9ef780a99418e9eb502a358a14d31b52e41e0cf626702309e8f4a1b
+合约地址var dappAddress = "n1hG2rK6S1ZhdNZav2Xmg9xtgzFxqUDb358";//主网合约地址
+主网合约Hash ：49118c0e45844b5167da58fc76952eb6409b92d7e34b85e1578121c4fe15f191
+
+测试网合约地址：var dappAddress = "n1gCaW4aS2sPg1GfTRZKyF1eVZwTi1ZeNae"; // 測試合约地址

@@ -33,6 +33,7 @@
 				width: 100%;
 				margin-left: 20%;
 				margin-bottom: 200px;
+				margin-top: 100px;
 			}
 			
 			.pin {
@@ -58,17 +59,48 @@
 				word-wrap: break-word;
 				text-align: left;
 			}
+			
+			.user_info_name {
+				width: auto;
+				height: 30px;
+				align-items: center;
+				display: flex;
+				font-weight: bold;
+				color: orange;
+				padding: 10px;
+			}
+			.date{
+				width: auto;
+				height: 30px;
+				align-items: center;
+				display: flex;
+				padding: 10px;
+			}
+			.user_info_bg {
+				background: #fafafa;
+				display: -webkit-box;
+				padding-top: 10px;
+			}
+			.title_desc {
+				width: 100%;
+				margin-top: 100px;
+				padding-left: 20%;
+				padding-right: 20%;
+				text-align: left;
+			}
 		</style>
 	</head>
 
 	<body class="background">
-		
+		<h1 id="fh5co-logo" class="title_desc"><font color="white" >个人碎片空间</font></h1>
 		<div id="waterfall" class="water"></div>
 
 	</body>
 
 	<script>
-		var dappAddress = "n1z3PqXLFGDHQJyFBeDYG5vSY6WVxaCN7ea";//主网合约地址
+			
+//			var dappAddress = "n1gCaW4aS2sPg1GfTRZKyF1eVZwTi1ZeNae"; // 測試合约地址
+			var dappAddress = "n1hG2rK6S1ZhdNZav2Xmg9xtgzFxqUDb358";//主网合约地址
 			var NebPay = require("nebpay"); //https://github.com/nebulasio/nebPay
 			var nebPay = new NebPay();
 			var postData = new Map();
@@ -111,7 +143,7 @@
 			var loadfunc = function() {
 				setTimeout(function() {
 					waterfall.off('load', loadfunc)
-					getList(offset, limit, false)
+					getList(offset, limit, true)
 
 				}, 1000)
 			}
@@ -123,7 +155,7 @@
 				var value = "0";
 				if(isPrivate) {
 
-					var callFunction = "getPrivate";
+					var callFunction = "getPrivateList";
 					var callArgs = "[\"" + currentAddress + "\",\"" + offset + "\",\"" + limit + "\"]"; // 可分页，[offset, limit]
 
 				} else {
@@ -151,7 +183,7 @@
 
 						postData.set(postObj.postID.toString(), postObj);
 						arr.push('<div class="pin"><img src="' + postObj.postImageSource + '" class="img" alt="" data-index=' + postObj.postID + '> <p class="description">' +
-							postObj.postContent + '</p><div class="user_info_bg"><font class = "user_info_name" >' + postObj.userName + ' </font></div> </div>')
+							postObj.postContent + '</p><div class="user_info_bg"><font class = "user_info_name" >' + postObj.userName + ' </font><font class="date">'+postObj.postDate+'</font></div> </div>')
 
 					}
 
